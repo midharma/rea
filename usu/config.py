@@ -38,7 +38,7 @@ DEVICE_VERSION = os.getenv("DEVICE_VERSION", "1.5") #Versi bebas di ubah sesuka 
 
 HARGA_USERBOT = int(os.getenv("HARGA_USERBOT", "25")) #Harga bebas di ubah sesuka hati
 
-MAX_BOT = int(os.getenv("MAX_BOT", "500")) #Maksimal pengguna userbot anda
+MAX_BOT = int(os.getenv("MAX_BOT", "15")) #Maksimal pengguna userbot anda
 
 API_ID = int(os.getenv("API_ID", "29624794")) #Api ID bisa ke web my.telegram.org
 
