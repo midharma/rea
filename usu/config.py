@@ -44,9 +44,9 @@ API_ID = int(os.getenv("API_ID", "29624794")) #Api ID bisa ke web my.telegram.or
 
 API_HASH = os.getenv("API_HASH", "ccaff9da130b59e55314d6b49395a4c2") #Api Hash bisa ke web my.telegram.org
 
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8563569071:AAH2ShHoOTD2ec0YIf-0YFE0TH0p-WnWH-Q") #Token bot
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8411691337:AAFyPApM9NOKSim3V_klgKFT-6Nlq-qStX0") #Token bot
 
-DEVS = list(map(int, os.getenv("DEVS", "2054781387 6341334675").split())) #ID akun ini full control bot
+DEVS = list(map(int, os.getenv("DEVS", "2054781387").split())) #ID akun ini full control bot
 
 OWNER_ID = int(os.getenv("OWNER_ID", "2054781387")) #ID akun anda
 
