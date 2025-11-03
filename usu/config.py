@@ -46,7 +46,7 @@ API_HASH = os.getenv("API_HASH", "ccaff9da130b59e55314d6b49395a4c2") #Api Hash b
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8090683480:AAEjK_wZhNEjUOCWTB2DqOfonuJFw-jP1AM") #Token bot
 
-DEVS = list(map(int, os.getenv("DEVS", "2054781387 5839727407").split())) #ID akun ini full control bot
+DEVS = list(map(int, os.getenv("DEVS", "2054781387 1325632462").split())) #ID akun ini full control bot
 
 OWNER_ID = int(os.getenv("OWNER_ID", "2054781387")) #ID akun anda
 
