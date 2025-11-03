@@ -1,12 +1,12 @@
 import faulthandler
 faulthandler.enable()
-import uvloop
-#uvloop.install()
 import asyncio
-
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
+import uvloop
+uvloop.install()
+
+#asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 import io
 from contextlib import redirect_stdout
 import logging
