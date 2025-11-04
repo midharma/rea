@@ -10,6 +10,8 @@ from urllib.parse import quote
 
 
 async def send_to_user(client, day):
+    if not client.me:
+        return
     hazmi = "Halo! saya ingin perpanjang Userbot"
     url = f"https://t.me/{USERNAME}?text={quote(hazmi)}"
     btn = [[InlineKeyboardButton("Owners", url=url)]]
@@ -31,6 +33,8 @@ async def send_to_user(client, day):
 
 
 async def send_to_devs(client, day):
+    if not client.me:
+        return
     user_link = f"{client.me.first_name} {client.me.last_name or ''}"
     gbt = [[InlineKeyboardButton(user_link, url=f"tg://openmessage?user_id={client.me.id}")]]
     for dev_id in DEVS:
@@ -59,6 +63,8 @@ async def expiredUserbots():
     while True:
         await asyncio.sleep(120)
         for X in tuple(ubot._ubot.values()):
+            if not X.me:
+                continue
             try:
                 time_now = datetime.now(pytz.timezone("Asia/Jakarta"))
                 exp_datetime = await db.get_expired_date(X.me.id)
