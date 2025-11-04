@@ -277,7 +277,6 @@ async def login(client, handle, user_id, new_client, phone_number, code):
         api_id=API_ID,
         api_hash=API_HASH,
         session_string=session_string,
-        in_memory=True,
     )
     await aio_client.start()
     del pengguna[user_id]
@@ -410,7 +409,6 @@ async def _(client, callback_query):
             name=str(callback_query.id),
             api_id=API_ID,
             api_hash=API_HASH,
-            in_memory=True,
         )
         new_client = pengguna[user_id]["new_client"]
         phone_number = pengguna[user_id]["phone_number"]
@@ -632,7 +630,10 @@ async def _(client, callback_query):
             pass
         await db.remove_ubot(X.me.id)
         await db.rem_expired_date(X.me.id)
-        await X.invoke(LogOut())
+        try:
+            await X.invoke(LogOut())
+        except:
+            pass
         del ubot._ubot[idnya]
         await callback_query.answer(
                     f"Successfully deleted from database!", True
