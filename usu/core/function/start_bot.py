@@ -31,4 +31,4 @@ async def bots():
 
 async def start_bot():
     logger.info(f"Database load: {DATABASE}.db")
-    asyncio.create_task(bots())
+    await bots()
