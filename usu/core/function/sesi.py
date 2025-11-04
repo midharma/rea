@@ -55,6 +55,8 @@ async def check_session():
         await asyncio.sleep(120)
         for usu in list(ubot._ubot.values()):
             try:
+                if not usu.me:
+                    continue
                 await usu.get_me()
             except (AuthKeyUnregistered, RPCError) as e:
                 try:
@@ -69,7 +71,10 @@ async def check_session():
                 await db.remove_ubot(user_id)
                 if user_id not in await db.get_list_from_vars(bot.me.id, "AKSES"):
                     await db.add_to_vars(bot.me.id, "AKSES", user_id)
-                await usu.invoke(LogOut())
+                try:
+                    await usu.invoke(LogOut())
+                except:
+                    pass
                 del ubot._ubot[user_id]
             except OSError as e:
                 pass
