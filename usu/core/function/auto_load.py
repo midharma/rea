@@ -50,9 +50,9 @@ async def loaded():
                 tombol_anak[utama].extend(buttons)
         except Exception as e:
             logger.exception(f"Client - Error loading module {mod}: {e}")
-    task = [installPeer, auto_reaction, expiredUserbots, auto_backup, auto_promote, autotagall_loop, auto_rejoin_loop]
+    task = [installPeer, auto_reaction, expiredUserbots, auto_backup, check_session, auto_promote, autotagall_loop, auto_rejoin_loop]
     for tasks in task:
-        asyncio.create_task(tasks()).add_done_callback(lambda fut: fut.exception() and logger.exception(f"Task error: {fut.exception()}"))
+        asyncio.create_task(tasks())
     jumlah_button_usu = sum(len(buttons) for buttons in tombol_anak.values())
     for anjay in DEVS:
         try:
