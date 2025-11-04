@@ -36,7 +36,7 @@ async def _(client, message):
         bcdb = await db.get_list_from_vars(client.me.id, "bcdb")
         if not chat_id:
             return await msg.edit(f"""<i><b>{ggl}Invalid!</b></i>""")
-        if chat_id in blacklist:
+        if chat_id in bcdb:
             return await msg.edit(f"""<i><b>{ggl}Already in the broadcast database!</b></i>""")
         await db.add_to_vars(client.me.id, "bcdb", chat_id)
         return await msg.edit(f"""<i><b>{sks}Added to broadcast database!</b></i>""")
