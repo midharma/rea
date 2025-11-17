@@ -3,6 +3,7 @@ import shutil
 import pytz
 from datetime import datetime
 from usu import *
+from random import shuffle
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from usu.core.helpers.inline import BTN
 
