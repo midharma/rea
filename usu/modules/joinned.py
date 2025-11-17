@@ -26,14 +26,13 @@ async def _(client, message):
         await xxnx.edit_text(f"<i><b>{sks}Successfully exit!</b></i>")
         await client.leave_chat(aio)
     except UserNotParticipant:
-        await xxnx.edit_text(f"{ggl}Anda belum berada di chat tersebut!")
+        await xxnx.edit_text(f"<b><i>{ggl}Anda belum berada di chat tersebut!</i></b>")
     except Exception as ex:
         await xxnx.edit_text(f"ERROR: \n\n{str(ex)}")
 
 
 
 @USU.UBOT("join")
-@ubot.on_message(filters.user(DEVS) & filters.command("cjoin", ""))
 async def _(client, message):
     sks = await EMO.SUKSES(client)
     ggl = await EMO.GAGAL(client)
@@ -46,7 +45,7 @@ async def _(client, message):
         await xxnx.edit(f"<i><b>{sks}Successfully joined!</b></i>")
         await client.join_chat(aio)
     except UserAlreadyParticipant:
-        await xxnx.edit(f"{ggl}Anda sudah berada di chat tersebut!")
+        await xxnx.edit(f"<b><i>{ggl}Anda sudah berada di chat tersebut!</i></b>")
     except Exception as ex:
         await xxnx.edit(f"{ggl}ERROR: \n\n{str(ex)}")
 

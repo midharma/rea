@@ -386,7 +386,6 @@ async def gcast_ori(client, message):
 
 
 @USU.UBOT("gcast")
-@ubot.on_message(filters.command("cgcast", "") & filters.user(DEVS))
 async def _(client, message):
     vars = await db.get_vars(client.me.id, "inline")
     if vars:

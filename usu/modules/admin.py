@@ -10,9 +10,14 @@ from pyrogram.errors.exceptions.bad_request_400 import (
 )
 
 from pyrogram.errors import BotResponseTimeout, QueryIdInvalid
-
+from gc import get_objects
 from usu import *
  
+LOCKS = """Command for <b>Permissions</b>
+
+<b>Permissions</b>
+ <i>melihat daftar izin group</i>
+    <code>{0}perm</code>"""
 
 CHATBOT = """Command for <b>ChatBot-AI</b>
 
@@ -121,151 +126,278 @@ __UTAMA__ = "Admins"
 
 __TEXT__ = f"Menu Bantuan {__UTAMA__}!"
 
-__BUTTON__ = "Mutes", "Kicks", "Bans", "Pins", "Promote", "Antiuser", "Antigcast", "Del", "Zombies", "ChatBot-AI"
-__HASIL__ = MUTES, KICKS, BANS, PINS, PROMOTE, ANTIUSER, ANTIGCAST, DEL, ZOMBIES, CHATBOT
+__BUTTON__ = "Mutes", "Kicks", "Bans", "Pins", "Promote", "Antiuser", "Antigcast", "Del", "Zombies", "ChatBot-AI", "Permissions"
+__HASIL__ = MUTES, KICKS, BANS, PINS, PROMOTE, ANTIUSER, ANTIGCAST, DEL, ZOMBIES, CHATBOT, LOCKS
 
+
+# Daftar permission
 data = {
-    "msg": "can_send_messages",
-    "stickers": "can_send_other_messages",
-    "gifs": "can_send_other_messages",
-    "media": "can_send_media_messages",
-    "games": "can_send_other_messages",
-    "inline": "can_send_other_messages",
-    "url": "can_add_web_page_previews",
-    "polls": "can_send_polls",
-    "info": "can_change_info",
-    "invite": "can_invite_users",
-    "pin": "can_pin_messages",
+    "msg": "can_send_messages",               # Ngirim pesan
+    "media": "can_send_media_messages",       # Foto / video / musik / file
+    "url": "can_add_web_page_previews",       # Tautan tertanam
+    "polls": "can_send_polls",                # Poll
+    "info": "can_change_info",                # Ubah info obrolan
+    "invite": "can_invite_users",             # Tambah anggota
+    "pin": "can_pin_messages",                # Semat pesan
+    "other": "can_send_other_messages",
 }
 
-
+# Ambil permission saat ini
 async def current_chat_permissions(client, chat_id):
     perms = []
-    perm = (await client.get_chat(chat_id)).permissions
-    if perm.can_send_messages:
-        perms.append("can_send_messages")
-    if perm.can_send_media_messages:
-        perms.append("can_send_media_messages")
-    if perm.can_send_other_messages:
-        perms.append("can_send_other_messages")
-    if perm.can_add_web_page_previews:
-        perms.append("can_add_web_page_previews")
-    if perm.can_send_polls:
-        perms.append("can_send_polls")
-    if perm.can_change_info:
-        perms.append("can_change_info")
-    if perm.can_invite_users:
-        perms.append("can_invite_users")
-    if perm.can_pin_messages:
-        perms.append("can_pin_messages")
+    try:
+        perm = (await client.get_chat(chat_id)).permissions
+        if perm.can_send_messages:
+            perms.append("can_send_messages")
+        if perm.can_send_media_messages:
+            perms.append("can_send_media_messages")
+        if perm.can_send_other_messages:
+            perms.append("can_send_other_messages")
+        if perm.can_add_web_page_previews:
+            perms.append("can_add_web_page_previews")
+        if perm.can_send_polls:
+            perms.append("can_send_polls")
+        if perm.can_change_info:
+            perms.append("can_change_info")
+        if perm.can_invite_users:
+            perms.append("can_invite_users")
+        if perm.can_pin_messages:
+            perms.append("can_pin_messages")
+    except:
+        pass
     return perms
 
-
-async def tg_lock(
-    client,
-    message,
-    parameter,
-    permissions: list,
-    perm: str,
-    lock: bool,
-):
-    if lock:
-        if perm not in permissions:
-            return await message.reply(f"<b><i>{parameter} Sudah terkunci</i></b>")
-        permissions.remove(perm)
-    else:
-        if perm in permissions:
-            return await message.reply(f"<b><i>{parameter} Sudah terbuka</i></b>")
-        permissions.append(perm)
-    permissions = {perm: True for perm in set(permissions)}
-    try:
-        await client.set_chat_permissions(
-            message.chat.id, ChatPermissions(**permissions)
+# Buat keyboard
+def create_locks_keyboard(permissions, chat_id, msg_id):
+    buttons = []
+    row = []
+    for perm_key, perm_value in data.items():
+        button = InlineKeyboardButton(
+            perm_key.capitalize(),
+            callback_data=f"toggleperm_{chat_id}_{perm_key}_{msg_id}"
         )
-    except ChatNotModified:
-        return await message.reply(
-            f"<code>{message.text.split()[0]}</code> <b><i>[type]</i></b>"
+        row.append(button)
+        if len(row) == 2:
+            buttons.append(row)
+            row = []
+    if row:
+        buttons.append(row)
+    # Lock All / Unlock All
+    buttons.append([
+        InlineKeyboardButton("🔐 Lock All", callback_data=f"kunciall_{chat_id}_{msg_id}"),
+        InlineKeyboardButton("🔓 Unlock All", callback_data=f"bukaall_{chat_id}_{msg_id}")
+    ])
+    return InlineKeyboardMarkup(buttons)
+
+# Update teks inline
+async def update_locks_message(user, chat_id, cq, msg_id):
+    chat = await user.get_chat(chat_id)
+    current_perms = await current_chat_permissions(user, chat_id)
+    locked_count = len(data) - len([p for p in data.values() if p in current_perms])
+    unlocked_count = len([p for p in data.values() if p in current_perms])
+    status_lines = []
+    current_perms = await current_chat_permissions(user, chat_id)
+    for key, value in data.items():
+        icon = "🔓" if value in current_perms else "🔐"
+        status_lines.append(f"{icon} {key.capitalize()}")
+
+    status_text = (
+        f"<b><i>🔐 Permission Group</i></b>\n\n"
+        f"<b>Group:</b> {chat.title}\n\n"
+        + "\n".join(status_lines) +
+        "\n\n<i>Klik tombol untuk toggle lock/unlock</i>"
+    )
+    keyboard = create_locks_keyboard(current_perms, chat_id, msg_id)
+    try:
+        await cq.edit_message_text(status_text, reply_markup=keyboard)
+    except Exception as e:
+        logger.exception(e)
+
+@USU.UBOT("perm")
+@USU.GROUP
+async def locks_handler(client, message):
+    sks = await EMO.SUKSES(client)
+    prs = await EMO.PROSES(client)
+    ggl = await EMO.GAGAL(client)
+    try:
+        # pesan sementara menandakan loading
+        anu = await message.reply(f"{prs}<b>Memuat permission manager...</b>")
+
+        bot_username = bot.me.username  # username userbot
+        chat_id = message.chat.id
+
+        # memanggil inline query ke userbot sendiri
+        results = await client.get_inline_bot_results(
+            bot_username,
+            f"lockspanel|{client.me.id}|{chat_id}"
+        )
+
+        await client.send_inline_bot_result(
+            chat_id=chat_id,
+            query_id=results.query_id,
+            result_id=results.results[0].id,
+            reply_to_message_id=message.id
+        )
+
+        await anu.delete()
+    except Exception as e:
+        await message.reply(f"{ggl}<b>Error: {str(e)}</b>")
+
+
+@USU.INLINE("lockspanel")
+async def inline_locks_handler(client, inline_query):
+    query = inline_query.query.lower().strip()
+    if not query.startswith("lockspanel"):
+        return
+    try:
+        parts = query.split("|")
+        client_id = int(parts[1])
+        chat_id = int(parts[2])
+        user = ubot._ubot[client_id]
+        chat = await user.get_chat(chat_id)
+        permissions = await current_chat_permissions(user, chat_id)
+        locked_count = len(data) - len([p for p in data.values() if p in permissions])
+        unlocked_count = len([p for p in data.values() if p in permissions])
+        keyboard = create_locks_keyboard(permissions, chat_id, client_id)
+        status_lines = []
+        current_perms = await current_chat_permissions(user, chat_id)
+        for key, value in data.items():
+            icon = "🔓" if value in current_perms else "🔐"
+            status_lines.append(f"{icon} {key}")
+
+        status_text = (
+            f"<b><i>🔐 Permission Group</i></b>\n\n"
+            f"<b>Group:</b> {chat.title}\n\n"
+            + "\n".join(status_lines) +
+            "\n\n<i>Klik tombol untuk toggle lock/unlock</i>"
+        )
+        await inline_query.answer(
+            results=[
+                InlineQueryResultArticle(
+                    id="lockspanel",
+                    title="🔐 Permission Manager",
+                    description=f"🔒 {locked_count} Locked | 🔓 {unlocked_count} Unlocked",
+                    input_message_content=InputTextMessageContent(status_text),
+                    reply_markup=keyboard
+                )
+            ],
+            cache_time=1
+        )
+    except Exception as e:
+        await inline_query.answer(
+            results=[
+                InlineQueryResultArticle(
+                    id="error",
+                    title="❌ Error",
+                    description=str(e),
+                    input_message_content=InputTextMessageContent(f"<b><i>❌ Error: {str(e)}</i></b>")
+                )
+            ],
+            cache_time=1
+        )
+
+# Toggle permission
+@USU.CALLBACK("toggleperm_")
+async def toggle_perm_callback(client, callback_query):
+    parts = callback_query.data.split("_")
+    if len(parts) < 4:
+        return await callback_query.answer("❌ Invalid callback data!", show_alert=True)
+    chat_id = int(parts[1])
+    perm_key = parts[2]
+    client_id = int(parts[3])
+    user = ubot._ubot[client_id]
+    admin = await list_admins(user, chat_id)
+    if callback_query.from_user.id not in admin:
+        return await callback_query.answer("❌ Anda bukan admin group ini!", show_alert=True)
+    try:
+        perm_value = data.get(perm_key)
+        current_perms = await current_chat_permissions(user, chat_id)
+        keyboard = create_locks_keyboard(current_perms, chat_id, client_id)
+        perms_dict = {v: (v in current_perms) for v in data.values()}
+        perms_dict[perm_value] = not perms_dict[perm_value]
+        await user.set_chat_permissions(chat_id, ChatPermissions(**perms_dict))
+        await update_locks_message(user, chat_id, callback_query, client_id)
+        await callback_query.answer(
+            f"✅ Permission {perm_key} {'dibuka' if perms_dict[perm_value] else 'dikunci'}!",
+            show_alert=True
         )
     except ChatAdminRequired:
-        return await message.reply(f"<b><i>Tidak mempunyai izin!</i></b>")
-    await message.reply(
-        (
-            f"<b><i>Terkunci untuk non-admin!\nType: <code>{parameter}</code>\nGroup: {message.chat.title}</i></b>"
-            if lock
-            else f"<b><i>Terbuka untuk non-admin!\nType: <code>{parameter}</code>\nGroup: {message.chat.title}</i></b>"
-        )
+        await callback_query.answer("❌ Anda tidak punya akses admin!", show_alert=True)
+    except Exception as e:
+        logger.exception(e)
+        await callback_query.answer(f"❌ Error: {str(e)}", show_alert=True)
+
+# Lock All
+@USU.CALLBACK("kunciall_")
+async def lockall_callback(client, callback_query):
+    parts = callback_query.data.split("_")
+    if len(parts) < 3:
+        return await callback_query.answer("❌ Invalid callback data!", show_alert=True)
+    chat_id = int(parts[1])
+    client_id = int(parts[2])
+    user = ubot._ubot[client_id]
+    admin = await list_admins(user, chat_id)
+    if callback_query.from_user.id not in admin:
+        return await callback_query.answer("❌ Anda bukan admin group ini!", show_alert=True)
+    perms_lock = ChatPermissions(
+        can_send_messages=False,
+        can_send_media_messages=False,
+        can_send_other_messages=False,
+        can_add_web_page_previews=False,
+        can_send_polls=False,
+        can_change_info=False,
+        can_invite_users=False,
+        can_pin_messages=False
     )
+    current_perms = await current_chat_permissions(user, chat_id)
+    keyboard = create_locks_keyboard(current_perms, chat_id, client_id)
+    try:
+        await user.set_chat_permissions(chat_id, perms_lock)
+        await update_locks_message(user, chat_id, callback_query, client_id)
+        await callback_query.answer("🔒 Semua permission berhasil dikunci!", show_alert=True)
+    except ChatNotModified:
+        await callback_query.answer("⚠️ Semua permission sudah terkunci!", show_alert=True)
+    except ChatAdminRequired:
+        await callback_query.answer("❌ Anda tidak punya akses admin!", show_alert=True)
+    except Exception as e:
+        logger.exception(e)
+
+# Unlock All
+@USU.CALLBACK("bukaall_")
+async def unlockall_callback(client, callback_query):
+    parts = callback_query.data.split("_")
+    if len(parts) < 3:
+        return await callback_query.answer("❌ Invalid callback data!", show_alert=True)
+    chat_id = int(parts[1])
+    client_id = int(parts[2])
+    user = ubot._ubot[client_id]
+    admin = await list_admins(user, chat_id)
+    if callback_query.from_user.id not in admin:
+        return await callback_query.answer("❌ Anda bukan admin group ini!", show_alert=True)
+    perms_unlock = ChatPermissions(
+        can_send_messages=True,
+        can_send_media_messages=True,
+        can_send_other_messages=True,
+        can_add_web_page_previews=True,
+        can_send_polls=True,
+        can_change_info=False,
+        can_invite_users=True,
+        can_pin_messages=False
+    )
+    current_perms = await current_chat_permissions(user, chat_id)
+    keyboard = create_locks_keyboard(current_perms, chat_id, client_id)
+    try:
+        await user.set_chat_permissions(chat_id, perms_unlock)
+        await update_locks_message(user, chat_id, callback_query, client_id)
+        await callback_query.answer("🔓 Semua permission berhasil dibuka!", show_alert=True)
+    except ChatNotModified:
+        await callback_query.answer("⚠️ Semua permission sudah terbuka!", show_alert=True)
+    except ChatAdminRequired:
+        await callback_query.answer("❌ Anda tidak punya akses admin!", show_alert=True)
+    except Exception as e:
+        logger.exception(e)
 
 
-@USU.UBOT("lock|unlock")
-@USU.GROUP
-async def _(client, message):
-    sks = await EMO.SUKSES(client)
-    ggl = await EMO.GAGAL(client)
-    prs = await EMO.PROSES(client)
-    broad = await EMO.BROADCAST(client)
-    ptr = await EMO.PUTARAN(client)
-    if len(message.command) != 2:
-        return await message.reply(f"{ggl}<code>{message.text.split()[0]}</code> <b>[type]</b>")
-    chat_id = message.chat.id
-    parameter = message.text.strip().split(None, 1)[1].lower()
-    state = message.command[0].lower()
-    if parameter not in data and parameter != "all":
-        return await message.reply(incorrect_parameters)
-    permissions = await current_chat_permissions(client, chat_id)
-    if parameter in data:
-        await tg_lock(
-            client,
-            message,
-            parameter,
-            permissions,
-            data[parameter],
-            bool(state == "lock"),
-        )
-    elif parameter == "all" and state == "lock":
-        try:
-            await client.set_chat_permissions(chat_id, ChatPermissions())
-            await message.reply(
-                f"<b><i>{sks}Terkunci untuk non-admin!</i></b>"
-            )
-        except ChatAdminRequired:
-            return await message.reply(f"<b><i>{ggl}Not access!</i></b>")
-        except ChatNotModified:
-            return await message.reply(
-                f"<b><i>{sks}Terkunci untuk non-admin!</i></b>"
-            )
-    elif parameter == "all" and state == "unlock":
-        try:
-            await client.set_chat_permissions(
-                chat_id,
-                ChatPermissions(
-                    can_send_messages=True,
-                    can_send_media_messages=True,
-                    can_send_other_messages=True,
-                    can_add_web_page_previews=True,
-                    can_send_polls=True,
-                    can_change_info=False,
-                    can_invite_users=True,
-                    can_pin_messages=False,
-                ),
-            )
-        except ChatAdminRequired:
-            return await message.reply(f"<b><i>{ggl}Not access!</b>")
-        await message.reply(
-            f"<b><i>{sks}Terkunci untuk nonadmin!</i></b>"
-        )
-
-
-@USU.UBOT("locks")
-@USU.GROUP
-async def _(client, message):
-    permissions = await current_chat_permissions(client, message.chat.id)
-    if not permissions:
-        return await message.reply(f"<b><i>Terkunci untuk semua</i></b>")
-
-    perms = "-> __**" + "\n-> __**".join(permissions) + "**__"
-    await message.reply(f"<b><i>{perms}</i></b>")
-    
 
 @USU.UBOT("pin|unpin")
 @USU.GROUP

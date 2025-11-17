@@ -6,37 +6,8 @@ from pytz import timezone
 from pyrogram.raw.functions.auth import LogOut
 
 from usu import *
+from usu.config import HARGA_USERBOT
 
-
-@USU.UBOT("top")
-@USU.DEVS
-async def _(client, message):
-    sks = await EMO.SUKSES(client)
-    ggl = await EMO.GAGAL(client)
-    prs = await EMO.PROSES(client)
-    broad = await EMO.BROADCAST(client)
-    ptr = await EMO.PUTARAN(client)
-    vars = await db.all_vars(bot.me.id, "TOP") or {}
-    sorted_vars = sorted(vars.items(), key=lambda item: item[1], reverse=True)
-
-    command_count = 1000
-    text = message.text.split()
-
-    if len(text) == 2:
-        try:
-            command_count = min(max(int(text[1]), 1), 10)
-        except Exception:
-            pass
-
-    total_count = sum(count for _, count in sorted_vars[:command_count])
-
-    txt = f"<b>{broad}Top commands!</b>\n\n"
-    for command, count in sorted_vars[:command_count]:
-        txt += f" {command}:<code>{count}</code>\n"
-
-    txt += f"<b>\n{sks}Total commands:</b> <code>{total_count}</code>"
-
-    return await message.reply(txt, quote=True)
 
 
 @USU.UBOT("delubot")
@@ -69,7 +40,10 @@ async def _(client, message):
             await db.remove_ubot(user.id)
             await db.rem_expired_date(user.id)
             await msg.edit(f"<i><b>{sks}Successfully removed!</b></i>")
-            await X.invoke(LogOut())
+            try:
+                await X.invoke(LogOut())
+            except:
+                pass
             del ubot._ubot[user.id]
         except Exception as e:
             await msg.edit(e)
@@ -552,7 +526,7 @@ async def _(client, message):
             if len(usu) > 1 and usu[1].isdigit():
                 query = int(usu[1])
             else:
-                query = 20000
+                query = int(HARGA_USERBOT)
         elif len(usu) > 1:
             if usu[1].isdigit():
                 user_id = int(usu[1])
@@ -564,7 +538,7 @@ async def _(client, message):
             if len(usu) > 2 and usu[-1].isdigit():
                 query = int(usu[-1])
             else:
-                query = 20000
+                query = int(HARGA_USERBOT)
         else:
             return await msg.edit(f"<i><b>{ggl}{message.text} user_id/username - jumlah_saldo</b></i>")
     except Exception as error:
@@ -631,7 +605,7 @@ async def _(client, message):
             if len(usu) > 1 and usu[1].isdigit():
                 query = int(usu[1])
             else:
-                query = 20000
+                query = int(HARGA_USERBOT)
         elif len(usu) > 1:
             if usu[1].isdigit():
                 user_id = int(usu[1])
@@ -643,7 +617,7 @@ async def _(client, message):
             if len(usu) > 2 and usu[-1].isdigit():
                 query = int(usu[-1])
             else:
-                query = 20000
+                query = int(HARGA_USERBOT)
         else:
             return await msg.edit(f"<i><b>{ggl}{message.text} user_id/username - jumlah_saldo</b></i>")
     except Exception as error:

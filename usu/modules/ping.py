@@ -16,7 +16,6 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from usu import *
 
 @USU.UBOT("ping|p")
-@ubot.on_message(filters.command("cping|cp", "") & filters.user(DEVS))
 async def pingbro(client, message):
     vars = await db.get_vars(client.me.id, "switch")
     if vars:

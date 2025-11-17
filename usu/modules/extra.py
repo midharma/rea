@@ -267,20 +267,6 @@ JOINLEAVE = """Command for <b>JoinLeave</b>
  <i>keluar dari semua channel</i>
     <code>{0}leaveallch</code>"""
 
-LOCKS = """Command for <b>Locks</b>
-
-<b>Type</b>
-  <code>|msg |media |stickers |polls |info</code>
-  <code>|invite |webprev |pin |all</code>
-
-<b>Locks Group</b>
- <i>mengunci izin group</i>
-    <code>{0}lock</code> [type]
- <i>membuka izin group</i>
-    <code>{0}unlock</code> [type]
- <i>melihat daftar izin group</i>
-    <code>{0}locks</code>"""
-
 
 LOGGER = """Document for <b>Logger</b>
 
@@ -396,9 +382,9 @@ __UTAMA__ = "Extras"
 
 __TEXT__ = f"Menu Bantuan {__UTAMA__}!"
 
-__BUTTON__ = "Logger", "Emoji Mode", "Prefix", "Translate", "Chat-GPT", "Gemini-AI", "Absen", "Adzan", "Afk", "Admin List", "Bot List", "Animasi", "Kasar", "Archive", "Spam", "Read", "Button", "Creat", "Blocks", "Filters", "Game", "Invite", "Joinleave", "Locks", "Fonts", "Carbons","BarCodes", "Purge", "React", "Tagall", "Secret", "Set-Profile", "Set-Name", "Set-Bio", "Reseller", "Nulis", "Songs", "Convert", "Text Custom", "Inline Mode", "Help Custom"
+__BUTTON__ = "Logger", "Emoji Mode", "Prefix", "Translate", "Chat-GPT", "Gemini-AI", "Absen", "Adzan", "Afk", "Admin List", "Bot List", "Animasi", "Kasar", "Archive", "Spam", "Read", "Button", "Creat", "Blocks", "Filters", "Game", "Invite", "Joinleave", "Fonts", "Carbons","BarCodes", "Purge", "React", "Tagall", "Secret", "Set-Profile", "Set-Name", "Set-Bio", "Reseller", "Nulis", "Songs", "Convert", "Text Custom", "Inline Mode", "Help Custom"
 
-__HASIL__ = LOGGER, EMO_, PREFIX, TR, ASK, GEMINI, ABSEN, ADZAN, AFK, ADMINLIST, BOTLIST, ANIMASI, KASAR, ARCHIVE, SPAM, BACA, BUTTON, CREAT, BLOCKS, REP, GAME, INVITE, JOINLEAVE, LOCKS, FONTS, CARBONS, BAR, PURGE, REACT, TAGALL, SECRET, PP, NAME, BIO, RESELLER, NULIS, DOWN, CONVERT, TEXT_CUSTOM, INLINE_MODE, HELP_CUSTOM
+__HASIL__ = LOGGER, EMO_, PREFIX, TR, ASK, GEMINI, ABSEN, ADZAN, AFK, ADMINLIST, BOTLIST, ANIMASI, KASAR, ARCHIVE, SPAM, BACA, BUTTON, CREAT, BLOCKS, REP, GAME, INVITE, JOINLEAVE, FONTS, CARBONS, BAR, PURGE, REACT, TAGALL, SECRET, PP, NAME, BIO, RESELLER, NULIS, DOWN, CONVERT, TEXT_CUSTOM, INLINE_MODE, HELP_CUSTOM
 
 
 

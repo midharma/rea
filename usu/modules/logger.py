@@ -27,7 +27,7 @@ async def send_log(client, chat_id, message, message_text, msg):
                 tmp_file = await client.download_media(getattr(message, media_type))
 
                 kwargs = {"reply_markup": usu}
-                if media_type in ["photo", "video", "document", "animation", "audio"]:
+                if media_type in ["photo", "video", "document", "animation", "audio", "voice"]:
                     kwargs["caption"] = message_text
                     await send_media(chat_id, tmp_file, **kwargs)
                 elif media_type == "sticker":
@@ -86,7 +86,9 @@ Chat ID: <code>{message.chat.id}</code>
 Chat Type: Private
 
 Message ID: <code>{message.id}</code>
-Message: {message.caption}"""
+Message: {message.caption}
+
+[REPLY_DATA:{message.chat.id}:{message.id}]"""
     else:
         message_text = f"""Information Private!
 Name: {user_link}
@@ -97,7 +99,9 @@ Chat ID: <code>{message.chat.id}</code>
 Chat Type: Private
 
 Message ID: <code>{message.id}</code>
-Message: {message.text}"""
+Message: {message.text}
+
+[REPLY_DATA:{message.chat.id}:{message.id}]"""
     try:
         await send_log(client, client.me.id, message, f"<b><i>{message_text}</i></b>", "LOGS_PRIVATE")
     except FloodWait as e:
@@ -120,7 +124,9 @@ Chat ID: <code>{message.chat.id}</code>
 Chat Type: Group
 
 Message ID: <code>{message.id}</code>
-Message: {message.caption}"""
+Message: {message.caption}
+
+[REPLY_DATA:{message.chat.id}:{message.id}]"""
     else:
         message_text = f"""Information Group!
 Name: {user_link}
@@ -131,7 +137,9 @@ Chat ID: <code>{message.chat.id}</code>
 Chat Type: Group
 
 Message ID: <code>{message.id}</code>
-Message: {message.text}"""
+Message: {message.text}
+
+[REPLY_DATA:{message.chat.id}:{message.id}]"""
     try:
         await send_log(client, client.me.id, message, f"<b><i>{message_text}</i></b>", "LOGS_GROUP")
     except FloodWait as e:
@@ -151,7 +159,7 @@ async def safe_send_reply(client, message, chat_id, reply_to_message_id):
             if send_func:
                 kwargs = {"reply_to_message_id": reply_to_message_id}
 
-                if media_type in ["photo", "video", "document", "animation", "audio"]:
+                if media_type in ["photo", "video", "document", "animation", "audio", "voice"]:
                     kwargs["caption"] = getattr(message, "caption", None)
 
                 await send_func(chat_id, media_obj.file_id, **kwargs)
@@ -178,14 +186,13 @@ async def reply_to_log(client, message):
     if not text:
         return
 
-    # Ambil semua angka dari teks
-    ids = re.findall(r"-?\d+", text)
-    if len(ids) < 2:
-        return  # minimal ada Chat ID dan Message ID
+    # Cari penanda khusus [REPLY_DATA:chat_id:message_id]
+    match = re.search(r'\[REPLY_DATA:(-?\d+):(\d+)\]', text)
+    if not match:
+        return
 
-    # Ambil dua terakhir sebagai chat_id dan message_id
-    chat_id = int(ids[-2])
-    message_id = int(ids[-1])
+    chat_id = int(match.group(1))
+    message_id = int(match.group(2))
 
     # Kirim reply
     await safe_send_reply(client, message, chat_id, message_id)

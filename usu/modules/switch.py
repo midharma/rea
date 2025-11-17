@@ -23,7 +23,7 @@ async def _(client, message):
           "gcast": "EMOJI_BROADCAST",
           "sukses": "EMOJI_SUKSES",
           "gagal": "EMOJI_GAGAL",
-          "catatan": "EMOJI_KETERANGAN",
+          "catatan": "EMOJI_PUTARAN",
           "menunggu": "EMOJI_MENUNGGU",
           "alive": "EMOJI_UPTIME",
         }

@@ -39,7 +39,6 @@ __BUTTON__ = "Add Sudo", "Delete Sudo", "List Sudo", "Clear Sudo"
 __HASIL__ = ADDSUDO, DELSUDO, LISTSUDO, CLEARSUDO
 
 
-@ubot.on_message(filters.user(DEVS) & filters.command("caddsudo", ""))
 @USU.UBOT("addsudo")
 async def _(client, message):
     sks = await EMO.SUKSES(client)
@@ -75,7 +74,7 @@ async def _(client, message):
         return await msg.edit(error)
 
 
-@ubot.on_message(filters.user(DEVS) & filters.command("cdelsudo", ""))
+
 @USU.UBOT("delsudo")
 async def _(client, message):
     sks = await EMO.SUKSES(client)

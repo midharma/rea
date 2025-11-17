@@ -84,31 +84,7 @@ def usec() -> int:
     return int(time() * 1000000)
 
 
-async def _(client, message):
-    sks = await EMO.SUKSES(client)
-    ggl = await EMO.GAGAL(client)
-    prs = await EMO.PROSES(client)
-    command = get_arg(message)
-    msg = await message.reply(f"<i><b>{prs}Processing...</b></i>")
-    if not command:
-        return await msg.edit(f"<i><b>{ggl}Invalid!</b></i>")
-    try:
-        await process_command(message, command)
-        await msg.delete()
-    except Exception as error:
-        await message.reply(error)
 
-
-async def _(client, message):
-    command = get_arg(message)
-    msg = await message.reply(f"<i><b>Processing...</b></i>")
-    if not command:
-        return await msg.edit(f"<i><b>Invalid!</b></i>")
-    try:
-        await process_command(message, command)
-        await msg.delete()
-    except Exception as error:
-        await message.reply(error)
 
 @USU.UBOT("clean")
 @USU.DEVS
@@ -354,6 +330,7 @@ async def _(client, message):
     softw += f"<b>Disk :</b> <code>{humanbytes(penggunaan_disk.used)} / {humanbytes(penggunaan_disk.total)} ({penggunaan_disk.percent}%)</code>\n"
 
     await usu_msg.edit(f"<i><b>{softw}</b></i>")
+
 
 
 async def _(client, message):

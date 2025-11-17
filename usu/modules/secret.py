@@ -32,7 +32,7 @@ async def _(client, inline_query):
                         [
                             InlineKeyboardButton(
                                 text="Buka!",
-                                callback_data=f"read {q.query.split(None, 1)[1]}",
+                                callback_data=f"read {inline_query.query.split(None, 1)[1]}",
                             )
                         ],
                     ]
@@ -49,7 +49,11 @@ async def _(client, inline_query):
 @USU.CALLBACK("^read")
 async def _(client, cq):
     m = [obj for obj in get_objects() if id(obj) == int(cq.data.split(None, 1)[1])][0]
-    if not cq.from_user.id == m.reply_to_message.from_user.id:
+    anunya = [
+        getattr(getattr(m, "reply_to_message", None), "from_user", None) and m.reply_to_message.from_user.id,
+        getattr(getattr(m, "_client", None), "me", None) and m._client.me.id,
+    ]
+    if cq.from_user.id not in anunya:
         return await cq.answer(
             f"Tombol ini bukan buat anda! {cq.from_user.first_name} {cq.from_user.last_name or ''}",
             True,

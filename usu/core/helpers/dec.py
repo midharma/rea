@@ -24,7 +24,7 @@ async def get_private_and_group_chats(client):
     database = await db.get_list_from_vars(client.me.id, "bcdb") or []
 
     try:
-        async for dialog in client.get_dialogs(limit=None):
+        async for dialog in client.get_dialogs():
             chat_id = dialog.chat.id
             chat_type_enum = dialog.chat.type
             all_chats.append(chat_id)

@@ -82,8 +82,8 @@ if GEMINI_KEY:
 
 
 context_chat = {}
-MAX_HISTORY = 10
-JEDA_WAKTU = 2
+MAX_HISTORY = 50
+JEDA_WAKTU = 3
 
 async def waktu_tunggu(client, chat_id: int) -> bool:
     now = time()
@@ -231,9 +231,9 @@ async def get_ai_response(m, client):
     )
 
     system_prompt = (
-        "Kamu adalah teman chat di grup Telegram. Jawab singkat, kata-katanya jangan terlalu ai, dan manusiawi dan cuek dan jangan kapital dan jangan pake tanda . di akhir"
+        "Kamu adalah teman chat di grup Telegram. Jawab singkat, kata-katanya jangan terlalu ai, dan manusiawi dan cuek dan jangan kapital dan jangan pake tanda . di akhir dan jangan baku bahasa nya"
         "Pahami maksud dan konteks dari apa yang diketik user. "
-        "Jangan gunakan emot. Jika tidak mengerti maksud user, katakan jujur secara singkat dan cuek.\n\n"
+        "Jangan gunakan emot\n\n"
         f"{info_text}"
         f"{input_info_text}"
         "Jika ada ID, username, atau link Telegram, tampilkan info jika konteks nya meminta."
@@ -248,7 +248,7 @@ async def get_ai_response(m, client):
     for h in history:
         messages.append(types.Content(role=h["role"], parts=[types.Part.from_text(text=h["content"])]))
 
-    messages.append(types.Content(role="user", parts=[types.Part.from_text(text=m.text)]))
+    messages.append(types.Content(role="user", parts=[types.Part.from_text(text=(m.text or m.caption))]))
     for modelnya in GEMINI_TEXT_MODELS:
         try:
             response = await asyncio.to_thread(
@@ -357,6 +357,9 @@ def unpackInlineMessage(inline_message_id: str):
         "inline_message_id": inline_message_id,
     }
     return Atr(temp)
+
+def msg_obj(msg_id: int):
+    return next((obj for obj in get_objects() if id(obj) == msg_id), None)
 
 async def extract_id(message, text):
     def is_int(text):

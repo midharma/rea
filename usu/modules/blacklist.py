@@ -17,7 +17,6 @@ from pyrogram.errors.exceptions import FloodWait
 from usu import *
 
 @USU.UBOT("addbl")
-@ubot.on_message(filters.user(DEVS) & filters.command("caddbl", ""))
 async def _(client, message):
     sks = await EMO.SUKSES(client)
     ggl = await EMO.GAGAL(client)
@@ -44,7 +43,6 @@ async def _(client, message):
 
 
 @USU.UBOT("unbl")
-@ubot.on_message(filters.user(DEVS) & filters.command("cunbl", ""))
 async def _(client, message):
     sks = await EMO.SUKSES(client)
     ggl = await EMO.GAGAL(client)

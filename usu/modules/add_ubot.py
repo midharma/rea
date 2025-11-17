@@ -265,8 +265,6 @@ async def login(client, handle, user_id, new_client, phone_number, code):
             return await client.send_message(user_id, f"<b><i>Automatic cancellation!\n Use /start to restart</i></b>", reply_markup=ReplyKeyboardRemove())
     session_string = await new_client.export_session_string()
     await new_client.disconnect()
-    new_client.storage.session_string = session_string
-    new_client.in_memory = False
     bot_msg = await client.send_message(
         user_id,
         f"<b><i>Processing...</i></b>",
@@ -329,7 +327,7 @@ async def login(client, handle, user_id, new_client, phone_number, code):
     ]
     if LOGS_CHAT:
         await client.send_message(LOGS_CHAT, f"<i><b>Information Active!\nName: {handle.from_user.mention}\nID: {handle.from_user.id}</b></i>", reply_markup=InlineKeyboardMarkup(gbt))
-    #await bash("rm -rf *session*")
+    await bash("rm -rf *session*")
     await install_my_peer(aio_client)
     if AUTO_JOIN:
         for auto in AUTO_JOIN:
@@ -498,7 +496,7 @@ async def _(client, callback_query):
                         UB = Ubot(**_ubot_)
                         await UB.start()
                         asyncio.create_task(reload_bot())
-                        #await bash(f"rm -rf *session*")
+                        await bash(f"rm -rf *session*")
                         return await callback_query.edit_message_text(
                             f"<i><b>Restart [Userbot]({PHOTO}) berhasil dilakukan!\n\nName:</b> {UB.me.mention} {UB.me.last_name or ''} <b>|</b> {UB.me.id}</i>"
                         )

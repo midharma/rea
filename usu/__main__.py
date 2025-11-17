@@ -23,14 +23,15 @@ async def start_hazmi():
     await start_ubot()
     await loaded()
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep(60)
 
 if __name__ == "__main__":
     #apply_patch()
     restart_delay = 5
+    loop = asyncio.get_event_loop()
+
     while True:
         try:
-            loop = asyncio.get_event_loop()
             loop.run_until_complete(start_hazmi())
         except (KeyboardInterrupt, SystemExit):
             logger.info("🛑 Dihentikan manual.")

@@ -1,12 +1,10 @@
-import faulthandler
-faulthandler.enable()
 import uvloop
 uvloop.install()
 import asyncio
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
 
 #asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 import io
 from contextlib import redirect_stdout
 import logging
@@ -46,7 +44,7 @@ class ConnectionHandler(logging.Handler):
         for keyword in error_keywords:
             if keyword.lower() in message_lower:
                 os.system(f"kill -9 {os.getpid()} && bash start.sh")
-
+                break
 
 
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
@@ -152,41 +150,29 @@ class Bot(UsuInti):
 
     def on_message(self, filters=None, group=-1):
         def decorator(func):
-            async def safe_func(client, message):
-                async def safe_run():
-                    try:
-                        await func(client, message)
-                    except Exception as e:
-                        logger.exception(e)
-                asyncio.create_task(safe_run())
-            self.add_handler(MessageHandler(safe_func, filters), group)
-            return func
+            self.add_handler(MessageHandler(func, filters), group)
+            try:
+                return func
+            except Exception as e:
+                logger.exception(e)
         return decorator
 
     def on_callback_query(self, filters=None, group=-1):
         def decorator(func):
-            async def safe_func(client, callback_query):
-                async def safe_run():
-                    try:
-                        await func(client, callback_query)
-                    except Exception as e:
-                        logger.exception(e)
-                asyncio.create_task(safe_run())
-            self.add_handler(CallbackQueryHandler(safe_func, filters), group)
-            return func
+            self.add_handler(CallbackQueryHandler(func, filters), group)
+            try:
+                return func
+            except Exception as e:
+                logger.exception(e)
         return decorator
 
     def on_inline_query(self, filters=None, group=-1):
         def decorator(func):
-            async def safe_func(client, inline_query):
-                async def safe_run():
-                    try:
-                        await func(client, inline_query)
-                    except Exception as e:
-                        logger.exception(e)
-                asyncio.create_task(safe_run())
-            self.add_handler(InlineQueryHandler(safe_func, filters), group)
-            func
+            self.add_handler(InlineQueryHandler(func, filters), group)
+            try:
+                return func
+            except Exception as e:
+                logger.exception(e)
         return decorator
 
     def usu_stream(self):
@@ -343,16 +329,12 @@ class Ubot(UsuInti):
 
     def on_message(self, filters=None, group=-1):
         def decorator(func):
-            async def safe_func(client, message):
-                async def safe_run():
-                    try:
-                        await func(client, message)
-                    except Exception as e:
-                        logger.exception(e)
-                asyncio.create_task(safe_run())
             for ub in self._ubot.values():
-                ub.add_handler(MessageHandler(safe_func, filters), group)
-            return func
+                ub.add_handler(MessageHandler(func, filters), group)
+            try:
+                return func
+            except Exception as e:
+                logger.exception(e)
         return decorator
 
     def usu_stream(self):
@@ -368,7 +350,7 @@ class Ubot(UsuInti):
             with redirect_stdout(io.StringIO()):
                 await self.call_py.start()
         except Exception as e:
-            logger.exception(f"Error: {e}")
+            print(f"Error: {e}")
         handler = await db.get_pref(self.me.id)
         if handler:
             self._prefix[self.me.id] = handler

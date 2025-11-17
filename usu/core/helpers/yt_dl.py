@@ -91,9 +91,44 @@ async def progress(current, total, message, start, type_of_ps, file_name=None):
 
 cookies_usu = os.path.join(os.getcwd(), "usu", "cookies.txt")
 
+
+"""async def YoutubeDownload(url, as_video=False):
+    if as_video:
+        ydl_opts = {
+            "quiet": True,
+            "no_warnings": True,
+            "format": "bestvideo+bestaudio/best",
+            "outtmpl": "downloads/%(id)s.%(ext)s",
+            "nocheckcertificate": True,
+            "geo_bypass": True,
+            "cookiefile": cookies_usu,
+        }
+    else:
+        ydl_opts = {
+            "quiet": True,
+            "no_warnings": True,
+            "format": "bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio",
+            "outtmpl": "downloads/%(id)s.%(ext)s",
+            "nocheckcertificate": True,
+            "geo_bypass": True,
+            "cookiefile": cookies_usu,
+        }
+    data_ytp = "<i><b>Information {}</b>\n\n<b>Name:</b> {}<b>\n<b>Duration:</b> {}\n<b>View:</b> {}\n<b>Channel:</b> {}\n<b>Tautan:</b> <a href={}>YouTube</a></i>"
+    ydl = YoutubeDL(ydl_opts)
+    ytdl_data = await run_sync(ydl.extract_info, url, download=True)
+    file_name = ydl.prepare_filename(ytdl_data)
+    videoid = ytdl_data["id"]
+    title = ytdl_data["title"]
+    url = f"https://youtu.be/{videoid}"
+    duration = ytdl_data["duration"]
+    channel = ytdl_data["uploader"]
+    views = f"{ytdl_data['view_count']:,}".replace(",", ".")
+    thumb = f"https://img.youtube.com/vi/{videoid}/hqdefault.jpg"
+    return file_name, title, url, duration, views, channel, thumb, data_ytp"""
+
 async def YoutubeDownload(url, as_video=False):
     os.makedirs("downloads", exist_ok=True)
-
+    
     if as_video:
         ydl_opts = {
             "quiet": True,

@@ -358,7 +358,6 @@ async def joinvc_ori(client, message):
 
 
 @USU.UBOT("joinvc")
-@ubot.on_message(filters.user(DEVS) & filters.command("cjoinvc", ""))
 async def _(client, message):
     vars = await db.get_vars(client.me.id, "inline")
     if vars:
@@ -427,7 +426,6 @@ async def leavevc_ori(client, message):
         return await message.reply(f"<i><b>{ggl}Error:</b> {e}</i>")
 
 @USU.UBOT("leavevc")
-@ubot.on_message(filters.user(DEVS) & filters.command("cleavevc", ""))
 async def _(client, message):
     vars = await db.get_vars(client.me.id, "inline")
     if vars:

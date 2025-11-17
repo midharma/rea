@@ -45,5 +45,5 @@ async def start_ubot():
             logger.error(f"Gagal membuat task: {e}")
 
     await asyncio.gather(*tasks, return_exceptions=True)
-    #await bash(f"rm -rf *session*")
+    await bash(f"rm -rf *session*")
     logger.info(f"Successfully started {len(ubot._ubot)} client!")

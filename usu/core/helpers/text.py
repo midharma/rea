@@ -18,7 +18,7 @@ Silahkan adminkan Bot ini di group anda dengan akses penuh!
 Bot Hidup:</i></b>
 {usu_time}
 """
-   
+
     def EXP_MSG_UBOT(X):
         return f"""<i><b>Information Userbot!</b>
 <b>Name:</b> <a href=tg://user?id={X.me.id}>{X.me.first_name} {X.me.last_name or ''}</a>

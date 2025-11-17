@@ -54,26 +54,27 @@ async def _(client, message):
 
 @USU.UBOT("help")
 async def user_help(client, message):
-    if not get_arg(message):
+    module = message.text.split(None, 1)[1] if len(message.text.split()) > 1 else None
+
+    if not module:
         try:
             x = await client.get_inline_bot_results(bot.me.username, f"user_help {client.me.id}")
             await message.reply_inline_bot_result(x.query_id, x.results[0].id)
         except Exception as error:
-            await message.reply(error)
-    else:
-        module = (get_arg(message))
-        for utama, buttons in tombol_anak.items():
-            for button in buttons:
-                if button["text"].lower() == module.lower():
-                    try:
-                        x = await client.get_inline_bot_results(bot.me.username, f"user_help {client.me.id} {module}")
-                        await message.reply_inline_bot_result(x.query_id, x.results[0].id)
-                    except Exception as error:
-                        await message.reply(error)
-                    return
-        await message.reply(
-            f"<b><i>Module <code>{module}</code> not found!</i></b>"
-        )
+            await message.reply(str(error))
+        return
+
+    for utama, buttons in tombol_anak.items():
+        for button in buttons:
+            if button["text"].lower() == module.lower():
+                try:
+                    x = await client.get_inline_bot_results(bot.me.username, f"user_help {client.me.id} {module}")
+                    await message.reply_inline_bot_result(x.query_id, x.results[0].id)
+                except Exception as error:
+                    await message.reply(str(error))
+                return
+
+    await message.reply(f"<b><i>Module <code>{module}</code> not found!</i></b>")
 
 usu_back = {}
 
@@ -87,7 +88,7 @@ async def user_help_inline(client, inline_query):
         asu = await client.get_users(user_id)
     except Exception as e:
         return
-    if len(query.split()) == 3:
+    if len(query.split()) >= 3:
         module = " ".join(query.split()[2:]).lower()
         for utama, buttons in tombol_anak.items():
             for button in buttons:

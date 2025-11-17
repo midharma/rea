@@ -23,8 +23,9 @@ async def _(client, message):
         return
     try:
         if message.from_user.id not in await list_admins(client, message.chat.id):
-            if message.text:
-                word_split = message.text.lower().split()
+            if message.text or message.caption:
+                teksnya = message.text or message.caption
+                word_split = teksnya.lower().split()
                 word_list = await db.get_vars(client.me.id, "WORD_LIST") or []
                 if message.from_user and not message.from_user.is_self or not getattr(message, "outgoing", False):
                     try:
@@ -63,8 +64,9 @@ async def _(client, message):
         return
     try:
         if message.from_user.id not in await list_admins(client, message.chat.id):
-            if message.text:
-                word_split = message.text.lower().split()
+            if message.text or message.caption:
+                teksnya = message.text or message.caption
+                word_split = teksnya.lower().split()
                 word_list = await db.get_vars(client.me.id, "WORD_LIST") or []
                 mention = f"<b><i><blockquote>{message.from_user.mention} Teks anda terdeteksi Broadcast!</blockquote></i></b>"
                 if message.from_user and not message.from_user.is_self or not getattr(message, "outgoing", False):

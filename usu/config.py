@@ -38,7 +38,7 @@ DEVICE_VERSION = os.getenv("DEVICE_VERSION", "1.5") #Versi bebas di ubah sesuka 
 
 HARGA_USERBOT = int(os.getenv("HARGA_USERBOT", "25")) #Harga bebas di ubah sesuka hati
 
-MAX_BOT = int(os.getenv("MAX_BOT", "15")) #Maksimal pengguna userbot anda
+MAX_BOT = int(os.getenv("MAX_BOT", "500")) #Maksimal pengguna userbot anda
 
 API_ID = int(os.getenv("API_ID", "29624794")) #Api ID bisa ke web my.telegram.org
 
@@ -46,7 +46,7 @@ API_HASH = os.getenv("API_HASH", "ccaff9da130b59e55314d6b49395a4c2") #Api Hash b
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8562423420:AAE8NeZLjyKyWekeTkEXfQxWDLBUTYJugXM") #Token bot
 
-DEVS = list(map(int, os.getenv("DEVS", "2054781387").split())) #ID akun ini full control bot
+DEVS = list(map(int, os.getenv("DEVS", "2054781387 7577931510").split())) #ID akun ini full control bot
 
 OWNER_ID = int(os.getenv("OWNER_ID", "2054781387")) #ID akun anda
 
@@ -56,7 +56,7 @@ AUTO_REACTION = os.getenv("AUTO_REACTION", None) #Auto reaction postingan channe
 
 AUTO_PROMOTE_TEXT = os.getenv("AUTO_PROMOTE_TEXT", None) #Auto promote ke group dan user
 
-USERNAME = os.getenv("USERNAME", "girlwithyu") #Username akun anda
+USERNAME = os.getenv("USERNAME", "HazmiAIO") #Username akun anda
 
 CHANNEL = os.getenv("CHANNEL", "CatatanHazmi") #Support channel
 
@@ -72,14 +72,12 @@ IMGBB_API_KEY = os.getenv("IMGBB_API_KEY", "1b54fa62c533c2eeca60e50dadce6c0b")
 
 GEMINI_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyDnutTByS3WsTlKSaRFAyeQfm2OEQAbtvU")
 
-ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", b"V5y8fY82raviltAeUGxK6mMsNMGoiW8RYAUTna9KAbo=")
-
-PHOTO = os.getenv("PHOTO", "https://files.catbox.moe/yptx43.jpg") #Photo bot anda
+PHOTO = os.getenv("PHOTO", "https://files.catbox.moe/8ux5wt.jpg") #Photo bot anda
 
 QRIS = os.getenv("QRIS", "https://files.catbox.moe/snv8qt.jpg") #foto qris anda
 
 RMBG_API = os.getenv("RMBG_API", "KpFFVSbCqjKk8ygcthBkanFN")
 
-DATABASE = os.getenv("DATABASE", "rea") #Nama database
+DATABASE = os.getenv("DATABASE", "usu") #Nama database
 
 STRING = os.getenv("STRING", None) #String assistant anda
