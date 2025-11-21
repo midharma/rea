@@ -52,75 +52,6 @@ async def _(client, message):
         await xxnx.edit(f"{ggl}ERROR: \n\n{str(ex)}")
 
 
-@USU.UBOT("leaveallgc")
-async def _(client, message):
-    sks = await EMO.SUKSES(client)
-    ggl = await EMO.GAGAL(client)
-    prs = await EMO.PROSES(client)
-    broad = await EMO.BROADCAST(client)
-    ptr = await EMO.PUTARAN(client)
-    Man = await message.reply(f"<i><b>{prs}Processing...</b></i>")
-    er = 0
-    done = 0
-    async for dialog in client.get_dialogs():
-        if dialog.chat.type in (enums.ChatType.GROUP, enums.ChatType.SUPERGROUP):
-            chat = dialog.chat.id
-            try:
-                done += 1
-                await client.leave_chat(chat)
-            except BaseException:
-                er += 1
-    await Man.edit(
-        f"""<i><b>{broad}Leave Group!
-{sks}Success: {done}
-{ggl}Failed: {er}</b></i>"""
-    )
-
-
-@USU.UBOT("leaveallch")
-async def _(client, message):
-    sks = await EMO.SUKSES(client)
-    ggl = await EMO.GAGAL(client)
-    prs = await EMO.PROSES(client)
-    broad = await EMO.BROADCAST(client)
-    ptr = await EMO.PUTARAN(client)
-    Man = await message.reply(f"<i><b>{prs}Processing...</b></i>")
-    er = 0
-    done = 0
-    async for dialog in client.get_dialogs():
-        if dialog.chat.type in (enums.ChatType.CHANNEL):
-            chat = dialog.chat.id
-            try:
-                done += 1
-                await client.leave_chat(chat)
-            except BaseException:
-                er += 1
-    await Man.edit(
-        f"""<i><b>{broad}Leave Channel!
-{sks}Success: {done}
-{ggl}Failed: {er}</b></i>"""
-    )
-
-@USU.UBOT("leaveallmute")
-async def _(client, message):
-    sks = await EMO.SUKSES(client)
-    ggl = await EMO.GAGAL(client)
-    prs = await EMO.PROSES(client)
-    broad = await EMO.BROADCAST(client)
-    ptr = await EMO.PUTARAN(client)
-    done = 0
-    Man = await message.reply(f"<i><b>{prs}Processing...</b></i>")
-    async for dialog in client.get_dialogs():
-        if dialog.chat.type in (enums.ChatType.GROUP, enums.ChatType.SUPERGROUP):
-            chat = dialog.chat.id
-            try:
-                member = await client.get_chat_member(chat, "me")
-                if member.status == ChatMemberStatus.RESTRICTED:
-                    await client.leave_chat(chat)
-                    done += 1
-            except Exception:
-                pass
-    await Man.edit(f"""<i><b>{sks}Out of {done} group!</b></i>""")
 
 
 @USU.UBOT("leaveall")
@@ -134,7 +65,7 @@ async def leave_all(client, message):
     cmd = message.text.split()
     if len(cmd) < 2:
         return await usu.edit_text(f"<i><b>{ggl}{message.text.split()[0]} [group/users/channel/all]</i></b>")
-    if cmd[1] not in {"group", "mute", "channel", "user"}:
+    if cmd[1] not in {"group", "mute", "channel", "users"}:
         return await usu.edit_text(f"<i><b>{ggl}{message.text.split()[0]} [group/users/channel/all]</i></b>")
     done = 0
     er = 0
@@ -167,6 +98,7 @@ async def leave_all(client, message):
                         revoke=True
                         )
                     )
+                    done += 1
                 except FloodWait as e:
                     await asyncio.sleep(e.value)
                     await client.invoke(
@@ -176,13 +108,14 @@ async def leave_all(client, message):
                         revoke=True
                         )
                     )
+                    done += 1
                 except Exception as e:
                     er += 1
     else:
         chats = await get_data_id(client, cmd[1])
         for dialog in chats:
             if dialog:
-                peer = await client.resolve_peer(dialog.chat.id)
+                chat = dialog.chat.id
                 try:
                     await client.leave_chat(chat)
                     done += 1
