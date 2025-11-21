@@ -75,6 +75,7 @@ async def leave_and_play_next(client, update):
             bersihkan(lagu_berikutnya, thumb)
             if chat_id in playlist:
                 playlist[chat_id].pop(0)
+            return
         except Exception as e:
             logger.exception(f"[Leave and Play Next Error] {e}")
     elif chat_id in playlist and len(playlist[chat_id]) == 1:
@@ -84,6 +85,7 @@ async def leave_and_play_next(client, update):
             bersihkan(file, thumb)
             await client.leave_call(chat_id)
             del playlist[chat_id]
+            return
         except NoActiveGroupCall:
             pass
         except Exception as e:
@@ -200,6 +202,7 @@ async def next_song(client, chat_id, duration):
             playtask[client.me.id][chat_id] = loop.create_task(
                 next_song(client, chat_id, dur_berikutnya)
             )
+            return
         elif client.me.id in playlist and chat_id in playlist[client.me.id] and len(playlist[client.me.id][chat_id]) == 1:
             file = playlist[client.me.id][chat_id][0]["lagu"]
             thumb = playlist[client.me.id][chat_id][0]["thumb"]
@@ -211,6 +214,7 @@ async def next_song(client, chat_id, duration):
                 if not task.done():
                     task.cancel()
                 del playtask[client.me.id][chat_id]
+            return
     except asyncio.CancelledError:
         logger.info(f"[Next Song] Task cancelled for chat {chat_id}")
     except Exception as e:
