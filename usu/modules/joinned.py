@@ -73,13 +73,14 @@ async def leave_all(client, message):
         async for dialog in client.get_dialogs():
             if dialog.chat.type in (enums.ChatType.GROUP, enums.ChatType.SUPERGROUP):
                 chat = dialog.chat.id
-                member = await client.get_chat_member(chat, "me")
                 try:
+                    member = await client.get_chat_member(chat, "me")
                     if member.status == ChatMemberStatus.RESTRICTED:
                         await client.leave_chat(chat)
                         done += 1
                 except FloodWait as e:
                     await asyncio.sleep(e.value)
+                    member = await client.get_chat_member(chat, "me")
                     if member.status == ChatMemberStatus.RESTRICTED:
                         await client.leave_chat(chat)
                         done += 1
