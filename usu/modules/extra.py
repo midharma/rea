@@ -258,14 +258,10 @@ JOINLEAVE = """Command for <b>JoinLeave</b>
     <code>{0}join</code> [username/tautan]
 
 <b>Leave</b>
- <i>keluar dari group</i>
+ <i>keluar dari group itu sendiri</i>
     <code>{0}kickme</code>
- <i>keluar dari group yg membatasi</i>
-    <code>{0}leaveallmute</code>
- <i>keluar dari semua group</i>
-    <code>{0}leaveallgc</code>
- <i>keluar dari semua channel</i>
-    <code>{0}leaveallch</code>"""
+ <i>keluar dari semua chat</i>
+    <code>{0}leaveall</code> [group/channel/users]"""
 
 
 LOGGER = """Document for <b>Logger</b>
