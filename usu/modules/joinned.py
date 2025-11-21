@@ -72,7 +72,7 @@ async def leave_all(client, message):
     if cmd[1] == "mute":
         async for dialog in client.get_dialogs():
             if dialog.chat.type in (enums.ChatType.GROUP, enums.ChatType.SUPERGROUP):
-                chat = dialog.chat.id
+                chat = dialog
                 try:
                     member = await client.get_chat_member(chat, "me")
                     if member.status == ChatMemberStatus.RESTRICTED:
@@ -90,7 +90,7 @@ async def leave_all(client, message):
         chats = await get_data_id(client, cmd[1])
         for dialog in chats:
             if dialog:
-                peer = await client.resolve_peer(dialog.chat.id)
+                peer = await client.resolve_peer(dialog)
                 try:
                     await client.invoke(
                         DeleteHistory(
@@ -116,7 +116,7 @@ async def leave_all(client, message):
         chats = await get_data_id(client, cmd[1])
         for dialog in chats:
             if dialog:
-                chat = dialog.chat.id
+                chat = dialog
                 try:
                     await client.leave_chat(chat)
                     done += 1
