@@ -1,4 +1,5 @@
 from usu import *
+from pyrogram.errors import *
 
 
 
@@ -22,17 +23,20 @@ async def baca_read(client, message):
     query = cmd[1]
     chats = await get_data_id(client, query)
     done = 0
+    fail = 0
     for dialog in chats:
         if dialog:
             try:
                 sukses = await client.read_chat_history(dialog)
                 if sukses:
                     done += 1
-            except ChannelPrivate:
-                continue
+            except FloodWait as e:
+                sukses = await client.read_chat_history(dialog)
+                if sukses:
+                    done += 1
             except Exception as e:
-                await usu.edit_text(f"{ggl} Error: {str(e)}")
-                return
+                fail += 1
     await usu.edit_text(f"""<i><b>{broad}Read Chat!
 {sks}Success: {done}
+{ggl}Failed: {fail}
 {ptr}Type: {query}</b></i>""")
