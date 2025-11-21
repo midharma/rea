@@ -155,6 +155,7 @@ async def leave_all(client, message):
                 except Exception:
                     er += 1
     elif cmd[1] == "users":
+        chats = await get_data_id(client, cmd[1])
         for dialog in chats:
             if dialog:
                 peer = await client.resolve_peer(dialog.chat.id)
