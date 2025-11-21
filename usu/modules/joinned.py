@@ -3,10 +3,12 @@ from pyrogram import errors
 from pyrogram import enums
 from pyrogram.enums import ChatType, ChatMemberStatus
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, UserAlreadyParticipant
-from pyrogram.errors.exceptions.not_acceptable_406 import ChannelPrivate
+from pyrogram.errors.exceptions.not_acceptable_406 import asyncio
 
 from pyrogram import *
 from usu import *
+
+from pyrogram.raw.functions.messages import DeleteHistory
 
 
 
@@ -119,5 +121,79 @@ async def _(client, message):
             except Exception:
                 pass
     await Man.edit(f"""<i><b>{sks}Out of {done} group!</b></i>""")
+
+
+@USU.UBOT("leaveall")
+async def leave_all(client, message):
+    sks = await EMO.SUKSES(client)
+    ggl = await EMO.GAGAL(client)
+    prs = await EMO.PROSES(client)
+    broad = await EMO.BROADCAST(client)
+    ptr = await EMO.PUTARAN(client)
+    usu = await message.reply_text(f"<i><b>{prs}Processing...</b></i>")
+    cmd = message.text.split()
+    if len(cmd) < 2:
+        return await usu.edit_text(f"<i><b>{ggl}{message.text.split()[0]} [group/users/channel/all]</i></b>")
+    if cmd[1] not in {"group", "mute", "channel", "user"}:
+        return await usu.edit_text(f"<i><b>{ggl}{message.text.split()[0]} [group/users/channel/all]</i></b>")
+    done = 0
+    er = 0
+    if cmd[1] == "mute":
+        async for dialog in client.get_dialogs():
+            if dialog.chat.type in (enums.ChatType.GROUP, enums.ChatType.SUPERGROUP):
+                chat = dialog.chat.id
+                member = await client.get_chat_member(chat, "me")
+                try:
+                    if member.status == ChatMemberStatus.RESTRICTED:
+                        await client.leave_chat(chat)
+                        done += 1
+                except FloodWait as e:
+                    await asyncio.sleep(e.value)
+                    if member.status == ChatMemberStatus.RESTRICTED:
+                        await client.leave_chat(chat)
+                        done += 1
+                except Exception:
+                    er += 1
+    elif cmd[1] == "users":
+        for dialog in chats:
+            if dialog:
+                peer = await client.resolve_peer(dialog.chat.id)
+                try:
+                    await client.invoke(
+                        DeleteHistory(
+                        peer=peer,
+                        max_id=0,
+                        revoke=True
+                        )
+                    )
+                except FloodWait as e:
+                    await asyncio.sleep(e.value)
+                    await client.invoke(
+                        DeleteHistory(
+                        peer=peer,
+                        max_id=0,
+                        revoke=True
+                        )
+                    )
+                except Exception as e:
+                    er += 1
+    else:
+        chats = await get_data_id(client, cmd[1])
+        for dialog in chats:
+            if dialog:
+                peer = await client.resolve_peer(dialog.chat.id)
+                try:
+                    await client.leave_chat(chat)
+                    done += 1
+                except FloodWait as e:
+                    await asyncio.sleep(e.value)
+                    await client.leave_chat(chat)
+                    done += 1
+                except Exception as e:
+                    er += 1
+    await usu.edit_text(f"""<i><b>{broad}Keluar Chat!
+{sks}Success: {done}
+{ggl}Failed: {er}
+{ptr}Type: {cmd[1]}</b></i>""")
 
 
