@@ -3,7 +3,7 @@ from pyrogram import errors
 from pyrogram import enums
 from pyrogram.enums import ChatType, ChatMemberStatus
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, UserAlreadyParticipant
-from pyrogram.errors.exceptions.not_acceptable_406 import asyncio
+import asyncio
 
 from pyrogram import *
 from usu import *
