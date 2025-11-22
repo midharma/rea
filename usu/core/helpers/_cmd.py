@@ -300,15 +300,31 @@ class USU:
 
         def decorator(func):
             @ubot.on_message(ubot.cmd_prefix(command) & filter)
-            @ubot.on_message(~filters.me & filters.regex(f"^c({'|'.join(command.split('|'))})$") & filters.user(DEVS))
+            @ubot.on_message(~filters.me & filters.regex(f"^c({'|'.join(command.split('|'))})(?:\\s+.*)?$") & filters.user(DEVS))
             async def wrapped_func(client, message):
                 if message.command:
                     cmd = message.command[0].lower()
-                elif message.text and message.text.startswith("c"):
-                    cmd = message.text[1:].split()[0].lower() 
-                    message.command = [cmd]
-                else:
-                    return  
+
+                elif message.text:
+                    teks = message.text.strip().lower()
+                    semua = command.split("|")  # ex: ["gcast", "bc"]
+
+                    if teks.startswith("c"):
+                        msg_cmd = teks[1:].split()[0]
+                        if msg_cmd in semua:
+                            cmd = msg_cmd
+                            message.command = [cmd] + teks[len("c" + cmd):].strip().split()
+                        else:
+                            return
+                    else:
+                        for c in semua:
+                            if teks.startswith(c):
+                                cmd = c
+                                sisa = teks[len(c):].strip().split()
+                                message.command = [cmd] + sisa
+                                break
+                        else:
+                            return
                 #await update_cmd(bot.me.id, cmd, "TOP", increment=True)
                 try:
                     await func(client, message)
