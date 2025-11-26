@@ -16,7 +16,7 @@ from pytgcalls import PyTgCalls
 from pytgcalls import filters as fl
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode, ChatMemberStatus
-from pyrogram.handlers import CallbackQueryHandler, MessageHandler, InlineQueryHandler
+from pyrogram.handlers import CallbackQueryHandler, MessageHandler, InlineQueryHandler, EditedMessageHandler, ChatMemberUpdatedHandler
 from pyrogram.errors import FloodWait
 from pyrogram.types import Message, BotCommand
 from pyromod import listen
@@ -38,7 +38,7 @@ class ConnectionHandler(logging.Handler):
             "EMFILE",
             "[Errno 24]"
         ]
-        
+
         message_lower = record.getMessage().lower() 
 
         for keyword in error_keywords:
@@ -132,11 +132,15 @@ class UsuInti(Client):
 
 class Bot(UsuInti):
     def __init__(self, **kwargs):
+        kwargs["device_model"] = DEVICE_NAME
+        kwargs["app_version"] = DEVICE_VERSION
+        kwargs["system_version"] = SYSTEM_VERSION
+        kwargs["lang_code"] = "id"
+
         super().__init__(**kwargs)
+
         self.usu = None
         self.assistant = None
-        self.device_model = DEVICE_NAME
-        self.app_version = DEVICE_VERSION
 
         if STRING:
             self.usu = Client(
@@ -144,7 +148,11 @@ class Bot(UsuInti):
                 in_memory=True,
                 api_id=API_ID,
                 api_hash=API_HASH,
-                session_string=str(STRING)
+                session_string=str(STRING),
+                device_model=DEVICE_NAME,
+                app_version=DEVICE_VERSION,
+                system_version=SYSTEM_VERSION,
+                lang_code="id",
             )
             self.assistant = PyTgCalls(self.usu)
 
@@ -210,7 +218,7 @@ class Bot(UsuInti):
                     logger.error("Tambahkan assistant dan bot ke LOGS_CHAT dan jadikan admin.")
             except:
                 logger.error("Tambahkan assistant dan bot ke LOGS_CHAT dan jadikan admin.")
-                sys.exit()
+                return
 
     async def start(self):
         await super().start()
@@ -322,15 +330,39 @@ class Bot(UsuInti):
 class Ubot(UsuInti):
     __module__ = "pyrogram.client"
     def __init__(self, **kwargs):
+        kwargs["device_model"] = DEVICE_NAME
+        kwargs["app_version"] = DEVICE_VERSION
+        kwargs["system_version"] = SYSTEM_VERSION
+        kwargs["lang_code"] = "id"
+
         super().__init__(**kwargs)
+
         self.call_py = PyTgCalls(self)
-        self.device_model = DEVICE_NAME
-        self.app_version = DEVICE_VERSION
 
     def on_message(self, filters=None, group=-1):
         def decorator(func):
             for ub in self._ubot.values():
                 ub.add_handler(MessageHandler(func, filters), group)
+            try:
+                return func
+            except Exception as e:
+                logger.exception(e)
+        return decorator
+
+    def on_edited_message(self, filters=None, group=-1):
+        def decorator(func):
+            for ub in self._ubot.values():
+                ub.add_handler(EditedMessageHandler(func, filters), group)
+            try:
+                return func
+            except Exception as e:
+                logger.exception(e)
+        return decorator
+
+    def on_update_member(self, filters=None, group=-1):
+        def decorator(func):
+            for ub in self._ubot.values():
+                ub.add_handler(ChatMemberUpdatedHandler(func, filters), group)
             try:
                 return func
             except Exception as e:
@@ -350,7 +382,7 @@ class Ubot(UsuInti):
             with redirect_stdout(io.StringIO()):
                 await self.call_py.start()
         except Exception as e:
-            print(f"Error: {e}")
+            logger.exception(f"Error: {e}")
         handler = await db.get_pref(self.me.id)
         if handler:
             self._prefix[self.me.id] = handler
