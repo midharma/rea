@@ -72,8 +72,6 @@ BLACKLIST_CHAT = list(map(int, os.getenv("BLACKLIST_CHAT", "-1002579277466 -1002
 
 IMGBB_API_KEY = os.getenv("IMGBB_API_KEY", "1b54fa62c533c2eeca60e50dadce6c0b")
 
-ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", b"V5y8fY82raviltAeUGxK6mMsNMGoiW8RYAUTna9KAbo=")
-
 GEMINI_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyDnutTByS3WsTlKSaRFAyeQfm2OEQAbtvU")
 
 PHOTO = os.getenv("PHOTO", "https://files.catbox.moe/8ux5wt.jpg") #Photo bot anda
