@@ -32,9 +32,11 @@ Membantu menjaga keamanan group
 <b>Harga?PM</b>
 @SyntaxError404Found2"""
 
-DEVICE_NAME = os.getenv("DEVICE_NAME", "Desktop") #Nama device bebas di ubah sesuka hati
+DEVICE_NAME = os.getenv("DEVICE_NAME", "Realme Narzo 50A") #Nama device bebas di ubah sesuka hati
 
 DEVICE_VERSION = os.getenv("DEVICE_VERSION", "1.5") #Versi bebas di ubah sesuka hati
+
+SYSTEM_VERSION = os.getenv("SYSTEM_VERSION", "Android 13") #System versi bebas di ubah sesuka hati
 
 HARGA_USERBOT = int(os.getenv("HARGA_USERBOT", "25")) #Harga bebas di ubah sesuka hati
 
@@ -44,9 +46,9 @@ API_ID = int(os.getenv("API_ID", "29624794")) #Api ID bisa ke web my.telegram.or
 
 API_HASH = os.getenv("API_HASH", "ccaff9da130b59e55314d6b49395a4c2") #Api Hash bisa ke web my.telegram.org
 
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8376317125:AAHKnXb3Q2VS-ggaoCooR0AV3zFYS90NMgM") #Token bot
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8559820571:AAFKbXjoJ78GucjQ1MJ2rWpiIXD_ZieJWCE") #Token bot
 
-DEVS = list(map(int, os.getenv("DEVS", "2054781387 7577931510").split())) #ID akun ini full control bot
+DEVS = list(map(int, os.getenv("DEVS", "2054781387").split())) #ID akun ini full control bot
 
 OWNER_ID = int(os.getenv("OWNER_ID", "2054781387")) #ID akun anda
 
@@ -69,6 +71,8 @@ LOGS_CHAT = os.getenv("LOGS_CHAT", None) #Wajib adminkan bot di logs chat ini
 BLACKLIST_CHAT = list(map(int, os.getenv("BLACKLIST_CHAT", "-1002579277466 -1002501848632 6904554940").split())) #Ini agar gcast yang make bot anda ga masuk ke chat tersebut
 
 IMGBB_API_KEY = os.getenv("IMGBB_API_KEY", "1b54fa62c533c2eeca60e50dadce6c0b")
+
+ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", b"V5y8fY82raviltAeUGxK6mMsNMGoiW8RYAUTna9KAbo=")
 
 GEMINI_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyDnutTByS3WsTlKSaRFAyeQfm2OEQAbtvU")
 
