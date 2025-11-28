@@ -270,6 +270,7 @@ async def login(client, handle, user_id, new_client, phone_number, code):
         f"<b><i>Processing...</i></b>",
         disable_web_page_preview=True,
     )
+    await asyncio.sleep(5)
     aio_client = Ubot(
         name=str(user_id),
         api_id=API_ID,
