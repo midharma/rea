@@ -72,7 +72,7 @@ async def leave_all(client, message):
     if cmd[1] == "mute":
         async for dialog in client.get_dialogs():
             if dialog.chat.type in (enums.ChatType.GROUP, enums.ChatType.SUPERGROUP):
-                chat = dialog
+                chat = dialog.chat.id
                 try:
                     member = await client.get_chat_member(chat, "me")
                     if member.status == ChatMemberStatus.RESTRICTED:
